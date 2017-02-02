@@ -11,9 +11,9 @@ month = ['','января','февраля','марта','апреля','мая'
 counter = {'city':0,'country':0}
 version = {
             'parser': '2.0b8',
-            'smart_city' : '1.62'
+            'smart_city' : '1.63'
             }
-print('\aHottabbe followers parser\nParser version : %s\nSmart city module version : %s \n\n\n\n\n' % (version['parser'],version['smart_city']))
+print('\aHottabbe followers parser\nFollow on me - https://vk.com/hottabbe\nParser version : %s\nSmart city module version : %s \n\n\n' % (version['parser'],version['smart_city']))
 api = vk.API(vk.AuthSession(app_id='3265802', user_login=input ('Введите логин: '), user_password=input ('Введите пароль: '), scope='friends'), lang='ru', v = '5.62')
 print('\n' * 50)
 main = api.users.get(fields = 'country,city')[0]
@@ -62,7 +62,10 @@ def smart_city (user):
             if cities[key] >= bigger['count']:
                 bigger['city'] = key
                 bigger['count'] = cities[key]
-        percent = round(bigger['count']/(friends_list['count']+1) * 100,2)
+        try:
+            percent = round(bigger['count']/(friends_list['count']+1) * 100,2)
+        except UnboundLocalError:
+            percent = 0
         time.sleep(0.3)
         if ((percent in range(15,35) and friends_list['count'] > 100) or percent > 35) and bigger['city'] != 'no name':
             if bigger['city'] != user['city']['title']:
