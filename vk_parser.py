@@ -10,7 +10,7 @@ sex = ['Не указан','Женский','Мужской']
 month = ['','января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 counter = {'city':0,'country':0}
 version = {
-            'parser': '2.0b15',
+            'parser': '2.0b16',
             'smart_city' : '1.64'
             }
 print('\aHottabbe followers parser\nFollow on me - https://vk.com/hottabbe\nParser version : %s\nSmart city module version : %s \n\n\n' % (version['parser'],version['smart_city']))
@@ -157,7 +157,8 @@ def users_get ():
         except Exception:
             continue
         try:
-            if user['country']['title'] == main['country']:
+            user['country'] = user['country']['title']
+            if user['country'] == main['country']:
                 counter['country'] += 1
         except KeyError:
             user['country'] = 'Не указано'
