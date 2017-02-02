@@ -10,8 +10,8 @@ sex = ['Не указан','Женский','Мужской']
 month = ['','января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 counter = {'city':0,'country':0}
 version = {
-            'parser': '2.0b8',
-            'smart_city' : '1.63'
+            'parser': '2.0b15',
+            'smart_city' : '1.64'
             }
 print('\aHottabbe followers parser\nFollow on me - https://vk.com/hottabbe\nParser version : %s\nSmart city module version : %s \n\n\n' % (version['parser'],version['smart_city']))
 api = vk.API(vk.AuthSession(app_id='3265802', user_login=input ('Введите логин: '), user_password=input ('Введите пароль: '), scope='friends'), lang='ru', v = '5.62')
@@ -22,10 +22,6 @@ main['country'] = main['country']['title']
 print(main['first_name'] + ' ' + main['last_name'] + ' - Вход выполнен')
 smart_search = int(input ('Включить умный подбор города (долго) (0/1/2)\n0 - выключить\n1 - включить\n2 - гибридный метод\n===> <===\r===>'))
 start_date = time.time()
-def bufer(user):
-    time.sleep(0.5)
-    print('\aОшибка vk.com - повтор')
-    smart_city(user)
 def smart_city (user):
     if user['deactivated'] == 'Страница активна':
         try:
@@ -54,7 +50,8 @@ def smart_city (user):
                         cities.update({friend['city']['title'] : 1})
             bigger ={'city': 'no name','count':-2}
         except vk.exceptions.VkAPIError:
-           bufer(user)
+            print('\aВозникла ошибка.....повтор попытки')
+            time.sleep(0.95     )
         except Exception:
             print('Не удалось загрузить данные с vk.com.....Повтор')
         #### CHANGE CODE ####
@@ -66,7 +63,7 @@ def smart_city (user):
             percent = round(bigger['count']/(friends_list['count']+1) * 100,2)
         except UnboundLocalError:
             percent = 0
-        time.sleep(0.3)
+        time.sleep(0.225)
         if ((percent in range(15,35) and friends_list['count'] > 100) or percent > 35) and bigger['city'] != 'no name':
             if bigger['city'] != user['city']['title']:
                 print('    '+ user['first_name']+ ' ' + user['last_name'] + ' : ' + user['city']['title'] + ' ===> ' + bigger['city'])
@@ -179,7 +176,7 @@ def users_get ():
             user['bdate'] = 'Не указано'
         counter_users += 1
         if counter_users%100 == 0:
-            print('Обработано %s человек из %s' % (str(counter_users),str(count)))
+            print('Обработано %s человек из %s - прошло %s секунд от начала'% (str(counter_users),str(count),str(round(time.time() - start_date,2))))
         save_arr.append('https://vk.com/id%s;%s;%s;%s;%s;%s;%s;%s\n' % (user['id'],user['name'],user['country'],user['city'],user['sex'],user['bdate'],user['followers_count'],user['deactivated']))
     if saver(gen = 2,text = save_arr) == 'ok':
         print('Создание базы успешно завершено\nОбщая с вами страна у '+ str(counter['country']) + ' человек\nОбщий с вами город у '+ str(counter['city']) + ' человек\n')
